@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:15
+    container_name: marketplace-database
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_USER: traore
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: marketplace
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+    image: marketplace-back
+    container_name: marketplace-back-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/marketplace
+      SPRING_DATASOURCE_USERNAME: traore
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+    depends_on:
+      - database
+
+volumes:
+  db_data:

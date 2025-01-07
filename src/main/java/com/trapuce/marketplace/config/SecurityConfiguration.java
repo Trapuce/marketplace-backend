@@ -2,7 +2,6 @@ package com.trapuce.marketplace.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -18,7 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -59,20 +57,16 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Permet toutes les origines
-        configuration.setAllowedOrigins(List.of("*"));  // Autorise toutes les origines
+        configuration.setAllowedOrigins(List.of("*"));  
         
-        // Permet toutes les méthodes HTTP
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"));  // Toutes les méthodes HTTP
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"));
         
-        // Permet tous les en-têtes
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "*"));  // Permet tous les en-têtes (utilisation de "*")
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "*"));  
         
-        // Permet l'accès aux cookies et aux informations d'authentification
-        configuration.setAllowCredentials(true);  // Permet les cookies et credentials (comme les tokens)
+        configuration.setAllowCredentials(true); 
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);  // Applique cette configuration à toutes les URL
+        source.registerCorsConfiguration("/**", configuration);  
         return source;
     }
     

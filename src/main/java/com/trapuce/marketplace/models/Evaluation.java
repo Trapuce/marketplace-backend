@@ -13,7 +13,7 @@ import java.util.Date;
 public class Evaluation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "evaluator_id", nullable = false)

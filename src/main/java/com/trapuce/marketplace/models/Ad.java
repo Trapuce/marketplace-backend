@@ -15,7 +15,7 @@ import java.util.List;
 public class Ad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -53,4 +53,13 @@ public class Ad {
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
     private List<Photo> photos;
+
+    @OneToOne(mappedBy = "ad", cascade = CascadeType.ALL)
+    private RealEstateAttributes realEstateAttributes;
+
+    @OneToOne(mappedBy = "ad", cascade = CascadeType.ALL)
+    private VehicleAttributes vehicleAttributes;
+
+    @OneToOne(mappedBy = "ad", cascade = CascadeType.ALL)
+    private ElectronicAttributes electronicAttributes;
 }

@@ -25,7 +25,7 @@ public class ApplicationConfiguration {
     @Bean
     UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
-        .map(UserPrincipal::new) // Transforme l'utilisateur en UserPrincipal
+        .map(UserPrincipal::new) 
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     }
