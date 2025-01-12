@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name ="ads")
+@Table(name = "ads")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -62,4 +62,37 @@ public class Ad {
 
     @OneToOne(mappedBy = "ad", cascade = CascadeType.ALL)
     private ElectronicAttributes electronicAttributes;
+
+    @OneToOne(mappedBy = "ad", cascade = CascadeType.ALL)
+    private ProfessionalEquipmentAttributes professionalEquipmentAttributes;
+
+    public void addMessage(Message message) {
+        messages.add(message);
+        message.setAd(this);
+    }
+
+    public void removeMessage(Message message) {
+        messages.remove(message);
+        message.setAd(null);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+        favorite.setAd(this);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
+        favorite.setAd(null);
+    }
+
+    public void addPhoto(Photo photo) {
+        photos.add(photo);
+        photo.setAd(this);
+    }
+
+    public void removePhoto(Photo photo) {
+        photos.remove(photo);
+        photo.setAd(null);
+    }
 }

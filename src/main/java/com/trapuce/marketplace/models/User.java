@@ -1,9 +1,8 @@
 package com.trapuce.marketplace.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,5 +47,19 @@ public class User {
     @OneToMany(mappedBy = "evaluated", cascade = CascadeType.ALL)
     private List<Evaluation> received_evaluations;
 
-   
+    public void addAd(Ad ad) {
+        if (ads == null) {
+            ads = new ArrayList<>();
+        }
+        ads.add(ad);
+        ad.setUser(this); 
+    }
+
+    public void removeAd(Ad ad) {
+        if (ads != null) {
+            ads.remove(ad);
+            ad.setUser(null); 
+        }
+    }
+
 }

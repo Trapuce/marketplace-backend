@@ -38,6 +38,8 @@ public class AuthenticationService {
 
         User newUser = this.userMapper.RegisterUserDtoToUser(registerUserDto);
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        newUser.setRegistration_date(new Date());
+        newUser.setIs_professional(true);
         return userRepository.save(newUser);
     }
 

@@ -17,6 +17,9 @@ public class Photo {
     @JoinColumn(name = "ad_id", nullable = false)
     private Ad ad;
 
+    @Lob
+	private byte[] content;
+
     private String url;
-    private Integer order;
+    private int order;
 }
