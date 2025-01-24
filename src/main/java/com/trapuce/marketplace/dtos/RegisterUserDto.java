@@ -24,6 +24,8 @@ public class RegisterUserDto {
     @Email(message = "Email should be valid")
     private String email;
 
+    private String username ;
+
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be 10 digits")
     private String phone;

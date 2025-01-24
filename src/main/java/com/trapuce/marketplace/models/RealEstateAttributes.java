@@ -17,8 +17,8 @@ public class RealEstateAttributes {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "ad_id")
-    private Ad ad;
+    @JoinColumn(name = "advertisement_id")
+    private Advertisement advertisement;
 
     private Float habitableSurface;
     private Integer numberOfRooms;

@@ -17,8 +17,8 @@ public class LeisureAttributes {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "ad_id")
-    private Ad ad;
+    @JoinColumn(name = "advertisement_id")
+    private Advertisement advertisement;
 
     private String leisureType;
     private String condition; // NEW or USED

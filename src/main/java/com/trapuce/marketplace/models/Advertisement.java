@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "ads")
+@Table(name = "advertisements")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Ad {
+public class Advertisement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -40,59 +40,59 @@ public class Ad {
     private Date publication_date;
 
     @Enumerated(EnumType.STRING)
-    private AdStatus status;
+    private AdvertisementStatus status;
 
     private Boolean is_urgent;
     private Boolean is_active;
 
-    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<Message> messages;
 
-    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<Favorite> favorites;
 
-    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
-    private List<Photo> photos;
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
+    private List<Image> images;
 
-    @OneToOne(mappedBy = "ad", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private RealEstateAttributes realEstateAttributes;
 
-    @OneToOne(mappedBy = "ad", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private VehicleAttributes vehicleAttributes;
 
-    @OneToOne(mappedBy = "ad", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private ElectronicAttributes electronicAttributes;
 
-    @OneToOne(mappedBy = "ad", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private ProfessionalEquipmentAttributes professionalEquipmentAttributes;
 
     public void addMessage(Message message) {
         messages.add(message);
-        message.setAd(this);
+        message.setAdvertisement(this);
     }
 
     public void removeMessage(Message message) {
         messages.remove(message);
-        message.setAd(null);
+        message.setAdvertisement(null);
     }
 
     public void addFavorite(Favorite favorite) {
         favorites.add(favorite);
-        favorite.setAd(this);
+        favorite.setAdvertisement(this);
     }
 
     public void removeFavorite(Favorite favorite) {
         favorites.remove(favorite);
-        favorite.setAd(null);
+        favorite.setAdvertisement(null);
     }
 
-    public void addPhoto(Photo photo) {
-        photos.add(photo);
-        photo.setAd(this);
+    public void addImage(Image image) {
+        images.add(image);
+        image.setAdvertisement(this);
     }
 
-    public void removePhoto(Photo photo) {
-        photos.remove(photo);
-        photo.setAd(null);
+    public void removePhoto(Image image) {
+        images.remove(image);
+        image.setAdvertisement(null);
     }
 }

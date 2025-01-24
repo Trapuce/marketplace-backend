@@ -9,24 +9,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.trapuce.marketplace.dtos.AdPostDto;
-import com.trapuce.marketplace.models.Ad;
-import com.trapuce.marketplace.service.AdService;
+import com.trapuce.marketplace.dtos.AdvertisementPostDto;
+import com.trapuce.marketplace.models.Advertisement;
+
+import com.trapuce.marketplace.service.AdvertisementService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/ads")
-public class AdController {
+public class AdvertisementController {
 
     @Autowired
-    public AdService adService;
+    public AdvertisementService advertisementService;
 
     @PostMapping("/users/{userId}/ads")
-    public ResponseEntity<Ad> createUserAd(
+    public ResponseEntity<Advertisement> createUserAd(
             @PathVariable Long userId,
-            @Valid @RequestBody AdPostDto adPostDto) {
-        Ad createdAd = adService.createAdForUser(userId, adPostDto);
+            @Valid @RequestBody AdvertisementPostDto adPostDto) {
+        Advertisement createdAd = advertisementService.createAdForUser(userId, adPostDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAd);
     }
 }

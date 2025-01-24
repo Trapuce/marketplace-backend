@@ -17,8 +17,8 @@ public class VehicleAttributes {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "ad_id")
-    private Ad ad;
+    @JoinColumn(name = "advertisement_id")
+    private Advertisement advertisement;
 
     private String registrationNumber;
     private String brand;

@@ -1,6 +1,6 @@
 package com.trapuce.marketplace.models;
 
-public enum AdStatus {
+public enum AdvertisementStatus {
     NEW,
     USED,
     REFURBISHED

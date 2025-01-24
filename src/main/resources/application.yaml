@@ -17,6 +17,20 @@ spring:
     init:
       mode: always
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dt2040760@gmail.com
+    password: nhoqdgcmdkrxxzsg 
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    test-connection: true
+
 logging:
   level:
     root: info

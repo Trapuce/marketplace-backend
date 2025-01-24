@@ -17,8 +17,8 @@ public class ElectronicAttributes {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "ad_id")
-    private Ad ad;
+    @JoinColumn(name = "advertisement_id")
+    private Advertisement advertisement;
 
     private String brand;
     private String model;

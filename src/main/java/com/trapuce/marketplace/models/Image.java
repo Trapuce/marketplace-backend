@@ -3,27 +3,25 @@ package com.trapuce.marketplace.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
-
 @Entity
+@Table(name = "images")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Favorite {
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    @Column
+    private String name;
+    @Column
+    private String type;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "advertisement_id", nullable = false)
+    @JoinColumn(name = "advertisement_id")
     private Advertisement advertisement;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date added_date;
-    
+    @Lob
+    private byte[] imageData;
+    @OneToOne(mappedBy = "image")
+    private User user;
 }

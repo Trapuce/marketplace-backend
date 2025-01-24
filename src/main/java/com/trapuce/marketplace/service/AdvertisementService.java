@@ -1,29 +1,26 @@
 package com.trapuce.marketplace.service;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.trapuce.marketplace.dtos.AdPostDto;
+import com.trapuce.marketplace.dtos.AdvertisementPostDto;
 import com.trapuce.marketplace.dtos.ElectronicAttributesDto;
 import com.trapuce.marketplace.dtos.LocationDto;
 import com.trapuce.marketplace.dtos.ProfessionalEquipmentAttributesDto;
 import com.trapuce.marketplace.dtos.RealEstateAttributesDto;
 import com.trapuce.marketplace.dtos.VehicleAttributesDto;
-import com.trapuce.marketplace.models.Ad;
+import com.trapuce.marketplace.models.Advertisement;
 import com.trapuce.marketplace.models.Category;
 import com.trapuce.marketplace.models.ElectronicAttributes;
 import com.trapuce.marketplace.models.Location;
-import com.trapuce.marketplace.models.Photo;
 import com.trapuce.marketplace.models.ProfessionalEquipmentAttributes;
 import com.trapuce.marketplace.models.RealEstateAttributes;
 import com.trapuce.marketplace.models.User;
 import com.trapuce.marketplace.models.VehicleAttributes;
-import com.trapuce.marketplace.repository.AdRepository;
+import com.trapuce.marketplace.repository.AdvertisementRepository;
 import com.trapuce.marketplace.repository.CategoryRepository;
 import com.trapuce.marketplace.repository.LocationRepository;
 import com.trapuce.marketplace.repository.UserRepository;
@@ -31,10 +28,10 @@ import com.trapuce.marketplace.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class AdService {
+public class AdvertisementService {
 
     @Autowired
-    public AdRepository adRepository;
+    public AdvertisementRepository advertisementRepository;
 
     @Autowired
     public CategoryRepository categoryRepository;
@@ -46,65 +43,65 @@ public class AdService {
     public LocationRepository locationRepository;
 
     @Transactional
-    public Ad createAdForUser(Long userId, AdPostDto adPostDto) {
+    public Advertisement createAdForUser(Long userId, AdvertisementPostDto advertisementPostDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        Category category = categoryRepository.findById(adPostDto.getCategoryId())
+        Category category = categoryRepository.findById(advertisementPostDto.getCategoryId())
                 .orElseThrow(
-                        () -> new IllegalArgumentException("Category not found with ID: " + adPostDto.getCategoryId()));
+                        () -> new IllegalArgumentException("Category not found with ID: " + advertisementPostDto.getCategoryId()));
 
-        Ad ad = mapToAd(adPostDto);
+                        Advertisement advertisement = mapToAd(advertisementPostDto);
 
-        Location location = mapToLocation(adPostDto.getLocation());
+        Location location = mapToLocation(advertisementPostDto.getLocation());
 
-        user.addAd(ad);
-        category.addAd(ad);
-        location.addAd(ad);
+        user.addAd(advertisement);
+        category.addAdvertisement(advertisement);
+        location.addAdvertisement(advertisement);
 
         if (isVehicleCategory(category)) {
-            VehicleAttributes vehicleAttributes = mapToVehicleAttributes(adPostDto.getVehicleAttributes());
-            vehicleAttributes.setAd(ad);
-            ad.setVehicleAttributes(vehicleAttributes);
+            VehicleAttributes vehicleAttributes = mapToVehicleAttributes(advertisementPostDto.getVehicleAttributes());
+            vehicleAttributes.setAdvertisement(advertisement);
+            advertisement.setVehicleAttributes(vehicleAttributes);
         } else if (isRealEstateCategory(category)) {
-            RealEstateAttributes realEstateAttributes = mapToRealEstateAttributes(adPostDto.getRealEstateAttributes());
-            realEstateAttributes.setAd(ad);
-            ad.setRealEstateAttributes(realEstateAttributes);
+            RealEstateAttributes realEstateAttributes = mapToRealEstateAttributes(advertisementPostDto.getRealEstateAttributes());
+            realEstateAttributes.setAdvertisement(advertisement);
+            advertisement.setRealEstateAttributes(realEstateAttributes);
         }
 
         else if (isProfessionalEquipmentCategory(category)) {
             ProfessionalEquipmentAttributes professionalEquipmentAttributes = mapToProfessionalEquipmentAttributes(
-                    adPostDto.getProfessionalEquipmentAttributesDto());
-            professionalEquipmentAttributes.setAd(ad);
-            ad.setProfessionalEquipmentAttributes(professionalEquipmentAttributes);
+                advertisementPostDto.getProfessionalEquipmentAttributesDto());
+            professionalEquipmentAttributes.setAdvertisement(advertisement);
+            advertisement.setProfessionalEquipmentAttributes(professionalEquipmentAttributes);
         } else if (isElectronicAttributes(category)) {
-            ElectronicAttributes electronicAttributes = mapToElectronicAttributes(adPostDto.getElectronicAttributes());
-            electronicAttributes.setAd(ad);
-            ad.setElectronicAttributes(electronicAttributes);
+            ElectronicAttributes electronicAttributes = mapToElectronicAttributes(advertisementPostDto.getElectronicAttributes());
+            electronicAttributes.setAdvertisement(advertisement);
+            advertisement.setElectronicAttributes(electronicAttributes);
         }
-        if (adPostDto.getPhotos() != null && !adPostDto.getPhotos().isEmpty()) {
-            for (byte[] photoContent : adPostDto.getPhotos()) {
-                Photo photo = new Photo();
-                photo.setContent(photoContent);
-                ad.addPhoto(photo);
-            }
-        }
+        // if (adPostDto.getPhotos() != null && !adPostDto.getPhotos().isEmpty()) {
+        //     for (byte[] photoContent : adPostDto.getPhotos()) {
+        //         Photo photo = new Photo();
+        //         photo.setContent(photoContent);
+        //         ad.addPhoto(photo);
+        //     }
+        // }
         
         locationRepository.save(location);
 
-        return adRepository.save(ad);
+        return advertisementRepository.save(advertisement);
     }
 
-    private Ad mapToAd(AdPostDto adPostDto) {
-        Ad ad = new Ad();
-        ad.setTitle(adPostDto.getTitle());
-        ad.setDescription(adPostDto.getDescription());
-        ad.setIs_active(true);
-        ad.setIs_urgent(true);
-        ad.setPrice(adPostDto.getPrice());
-        ad.setPublication_date(new Date());
-        ad.setStatus(adPostDto.getStatus());
-        return ad;
+    private Advertisement mapToAd(AdvertisementPostDto advertisementPostDto) {
+        Advertisement advertisement = new Advertisement();
+        advertisement.setTitle(advertisementPostDto.getTitle());
+        advertisement.setDescription(advertisementPostDto.getDescription());
+        advertisement.setIs_active(true);
+        advertisement.setIs_urgent(true);
+        advertisement.setPrice(advertisementPostDto.getPrice());
+        advertisement.setPublication_date(new Date());
+        advertisement.setStatus(advertisementPostDto.getStatus());
+        return advertisement;
     }
 
     private Location mapToLocation(LocationDto locationDto) {
@@ -199,62 +196,62 @@ public class AdService {
         return "Électronique".equals(category.getName());
     }
 
-    public Ad getAdById(Long adId) {
-        return adRepository.findById(adId)
+    public Advertisement getAdById(Long adId) {
+        return advertisementRepository.findById(adId)
                 .orElseThrow(() -> new IllegalArgumentException("Ad not found with ID: " + adId));
     }
 
-    public List<Ad> getAllAds() {
-        return adRepository.findAll();
+    public List<Advertisement> getAllAds() {
+        return advertisementRepository.findAll();
     }
 
-    @Transactional
-    public void addPhotoToAd(Long adId, MultipartFile file, int order) {
-        Ad ad = adRepository.findById(adId)
-                .orElseThrow(() -> new IllegalArgumentException("Ad not found with ID: " + adId));
+    // @Transactional
+    // public void addPhotoToAd(Long adId, MultipartFile file, int order) {
+    //     Ad ad = adRepository.findById(adId)
+    //             .orElseThrow(() -> new IllegalArgumentException("Ad not found with ID: " + adId));
 
-        try {
-            Photo photo = Photo.builder()
-                    .ad(ad)
-                    .content(file.getBytes())
-                    .order(order)
-                    .build();
+    //     try {
+    //         Photo photo = Photo.builder()
+    //                 .ad(ad)
+    //                 .content(file.getBytes())
+    //                 .order(order)
+    //                 .build();
 
-            ad.addPhoto(photo);
-            adRepository.save(ad);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading file content", e);
-        }
-    }
+    //         ad.addPhoto(photo);
+    //         adRepository.save(ad);
+    //     } catch (IOException e) {
+    //         throw new RuntimeException("Error reading file content", e);
+    //     }
+    // }
 
     @Transactional
     public void deleteAdById(Long adId) {
-        Ad ad = adRepository.findById(adId)
+        Advertisement ad = advertisementRepository.findById(adId)
                 .orElseThrow(() -> new IllegalArgumentException("Ad not found with ID: " + adId));
 
         cleanupAdRelationships(ad);
 
-        adRepository.delete(ad);
+        advertisementRepository.delete(ad);
     }
 
-    private void cleanupAdRelationships(Ad ad) {
-        ad.setVehicleAttributes(null);
-        ad.setRealEstateAttributes(null);
-        ad.setProfessionalEquipmentAttributes(null);
-        ad.setElectronicAttributes(null);
+    private void cleanupAdRelationships(Advertisement advertisement) {
+        advertisement.setVehicleAttributes(null);
+        advertisement.setRealEstateAttributes(null);
+        advertisement.setProfessionalEquipmentAttributes(null);
+        advertisement.setElectronicAttributes(null);
 
-        if (ad.getLocation() != null) {
-            Location location = ad.getLocation();
-            location.removeAd(ad);
+        if (advertisement.getLocation() != null) {
+            Location location = advertisement.getLocation();
+            location.removeAdvertisement(advertisement);
             locationRepository.delete(location);
         }
 
-        if (ad.getUser() != null) {
-            ad.getUser().removeAd(ad);
+        if (advertisement.getUser() != null) {
+            advertisement.getUser().removeAd(advertisement);
         }
 
-        if (ad.getCategory() != null) {
-            ad.getCategory().removeAd(ad);
+        if (advertisement.getCategory() != null) {
+            advertisement.getCategory().removeAdvertisement(advertisement);
         }
     }
 

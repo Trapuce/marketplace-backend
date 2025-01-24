@@ -25,8 +25,8 @@ public class Message {
     private User recipient;
 
     @ManyToOne
-    @JoinColumn(name = "ad_id", nullable = false)
-    private Ad ad;
+    @JoinColumn(name = "advertisement_id", nullable = false)
+    private Advertisement advertisement;
 
     @Column(columnDefinition = "TEXT")
     private String content;

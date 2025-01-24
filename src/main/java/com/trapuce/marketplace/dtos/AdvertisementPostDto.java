@@ -3,8 +3,7 @@ package com.trapuce.marketplace.dtos;
 import java.util.Date;
 import java.util.List;
 
-import com.trapuce.marketplace.models.AdStatus;
-
+import com.trapuce.marketplace.models.AdvertisementStatus;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -14,7 +13,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class AdPostDto {
+public class AdvertisementPostDto {
 
     @NotNull(message = "User ID cannot be null")
     private Long userId;
@@ -35,7 +34,7 @@ public class AdPostDto {
     private Date publication_date;
 
     @NotNull(message = "Status cannot be null")
-    private AdStatus status;
+    private AdvertisementStatus status;
 
     @NotNull(message = "Urgency status cannot be null")
     private Boolean is_urgent;

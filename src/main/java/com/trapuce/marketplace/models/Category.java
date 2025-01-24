@@ -23,22 +23,22 @@ public class Category {
     private Category parent;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Ad> ads;
+    private List<Advertisement> advertisements;
 
-    public void addAd(Ad ad) {
-        if (ads == null) {
-            ads = new ArrayList<>(); 
+    public void addAdvertisement(Advertisement advertisement) {
+        if (advertisements == null) {
+            advertisements = new ArrayList<>(); 
         }
-        if (ad != null && !ads.contains(ad)) { 
-            ads.add(ad);
-            ad.setCategory(this); 
+        if (advertisement != null && !advertisements.contains(advertisement)) { 
+            advertisements.add(advertisement);
+            advertisement.setCategory(this); 
         }
     }
 
-    public void removeAd(Ad ad) {
-        if (ads != null && ad != null && ads.contains(ad)) {
-            ads.remove(ad);
-            ad.setCategory(null); 
+    public void removeAdvertisement(Advertisement advertisement) {
+        if (advertisements != null && advertisement != null && advertisements.contains(advertisement)) {
+            advertisements.remove(advertisement);
+            advertisement.setCategory(null); 
         }
     }
 

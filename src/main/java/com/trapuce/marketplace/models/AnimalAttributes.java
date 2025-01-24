@@ -17,8 +17,8 @@ public class AnimalAttributes {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "ad_id")
-    private Ad ad;
+    @JoinColumn(name = "advertisement_id")
+    private Advertisement ad;
 
     private String species;
     private String breed;

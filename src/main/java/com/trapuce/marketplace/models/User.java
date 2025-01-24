@@ -18,11 +18,13 @@ public class User {
     private String email;
 
     private String password;
-
+    private String username;
     private String firstName;
     private String lastName;
     private String phone;
     private String address;
+
+    private boolean accountVerified;
 
     @Temporal(TemporalType.DATE)
     private Date registration_date;
@@ -30,7 +32,7 @@ public class User {
     private Boolean is_professional;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Ad> ads;
+    private List<Advertisement> advertisements;
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private List<Message> sent_messages;
@@ -47,18 +49,26 @@ public class User {
     @OneToMany(mappedBy = "evaluated", cascade = CascadeType.ALL)
     private List<Evaluation> received_evaluations;
 
-    public void addAd(Ad ad) {
-        if (ads == null) {
-            ads = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private Image image;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "email_confirmation_token_id")
+    private EmailConfirmationToken emailConfirmationToken;
+
+    public void addAd(Advertisement advertisement) {
+        if (advertisements == null) {
+            advertisements = new ArrayList<>();
         }
-        ads.add(ad);
-        ad.setUser(this); 
+        advertisements.add(advertisement);
+        advertisement.setUser(this);
     }
 
-    public void removeAd(Ad ad) {
-        if (ads != null) {
-            ads.remove(ad);
-            ad.setUser(null); 
+    public void removeAd(Advertisement advertisement) {
+        if (advertisements != null) {
+            advertisements.remove(advertisement);
+            advertisement.setUser(null);
         }
     }
 
