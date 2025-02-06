@@ -30,17 +30,21 @@ import jakarta.transaction.Transactional;
 @Service
 public class AdvertisementService {
 
-    @Autowired
-    public AdvertisementRepository advertisementRepository;
+    private final AdvertisementRepository advertisementRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
+    private final LocationRepository locationRepository;
 
     @Autowired
-    public CategoryRepository categoryRepository;
-
-    @Autowired
-    public UserRepository userRepository;
-
-    @Autowired
-    public LocationRepository locationRepository;
+    public AdvertisementService(AdvertisementRepository advertisementRepository, 
+                                CategoryRepository categoryRepository, 
+                                UserRepository userRepository, 
+                                LocationRepository locationRepository) {
+        this.advertisementRepository = advertisementRepository;
+        this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
+        this.locationRepository = locationRepository;
+    }
 
     @Transactional
     public Advertisement createAdForUser(Long userId, AdvertisementPostDto advertisementPostDto) {
@@ -55,7 +59,7 @@ public class AdvertisementService {
 
         Location location = mapToLocation(advertisementPostDto.getLocation());
 
-        user.addAd(advertisement);
+        user.addAdvertisement(advertisement);
         category.addAdvertisement(advertisement);
         location.addAdvertisement(advertisement);
 
@@ -247,7 +251,7 @@ public class AdvertisementService {
         }
 
         if (advertisement.getUser() != null) {
-            advertisement.getUser().removeAd(advertisement);
+            advertisement.getUser().removeAdvertisement(advertisement);
         }
 
         if (advertisement.getCategory() != null) {

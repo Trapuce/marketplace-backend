@@ -17,11 +17,9 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (user.getIs_professional() != null && user.getIs_professional()) {
-            return List.of(new SimpleGrantedAuthority("ROLE_PROFESSIONAL"));
-        } else {
+      
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        }
+        
     }
 
     @Override

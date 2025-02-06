@@ -1,10 +1,10 @@
 package com.trapuce.marketplace.mappers;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
+import com.trapuce.marketplace.dtos.CreateUserDTO;
 import com.trapuce.marketplace.dtos.LoginUserDto;
-import com.trapuce.marketplace.dtos.RegisterUserDto;
+import com.trapuce.marketplace.dtos.UserDTO;
 import com.trapuce.marketplace.models.User;
 
 
@@ -13,7 +13,10 @@ import com.trapuce.marketplace.models.User;
 public interface UserMapper {
 
  
-    User RegisterUserDtoToUser(RegisterUserDto registerUserDto);
+
+    User CreateUserDTOToUser(CreateUserDTO createUserDto);
+
+    UserDTO UserToUserDTO(User user);
 
     User loginUserDtotoUser(LoginUserDto loginUserDto);
 

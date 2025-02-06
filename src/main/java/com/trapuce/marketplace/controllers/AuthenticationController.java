@@ -1,31 +1,20 @@
 package com.trapuce.marketplace.controllers;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.trapuce.marketplace.dtos.LoginUserDto;
-import com.trapuce.marketplace.dtos.RegisterUserDto;
-import com.trapuce.marketplace.models.LoginResponse;
+import com.trapuce.marketplace.dtos.*;
 import com.trapuce.marketplace.models.User;
-import com.trapuce.marketplace.models.UserPrincipal;
 import com.trapuce.marketplace.service.AuthenticationService;
-import com.trapuce.marketplace.service.EmailService;
-import com.trapuce.marketplace.service.JwtService;
-import com.trapuce.marketplace.utils.VerificationCodeGenerator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
 
 /**
@@ -36,31 +25,26 @@ import jakarta.validation.Valid;
 @RestController
 public class AuthenticationController {
 
-    @Autowired
-    private  JwtService jwtService;
-    @Autowired
-    private  AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public EmailService emailService;
-
+    public AuthenticationController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     /**
      * Endpoint to register a new user.
      *
-     * @param registerUserDto Data transfer object containing user registration
-     *                        details.
+     * @param createUserDTO Data transfer object containing user registration details.
      * @return ResponseEntity containing the created user object and HTTP status.
      */
     @Operation(summary = "Register a new user", description = "Registers a new user and returns the created user details.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "User registered successfully"),
-            @ApiResponse(responseCode = "400", description = "Validation error"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @PostMapping("/signUp")
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
-        User createdUser = this.authenticationService.signup(registerUserDto);
+    @ApiResponse(responseCode = "201", description = "User registered successfully")
+    @ApiResponse(responseCode = "400", description = "Validation error")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@Valid @RequestBody CreateUserDTO createUserDTO) {
+        User createdUser = authenticationService.register(createUserDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
@@ -71,43 +55,95 @@ public class AuthenticationController {
      * @return ResponseEntity containing the JWT token or error message.
      */
     @Operation(summary = "Authenticate a user", description = "Authenticates a user and returns a JWT token on success.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Authentication successful"),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @PostMapping("/signIn")
-    public ResponseEntity<?> authenticate(@Valid @RequestBody LoginUserDto loginUserDto) {
-
-        UserPrincipal authenticatedUser = authenticationService.authenticate(loginUserDto);
-
-        String jwtToken = jwtService.generateToken(authenticatedUser);
-
-        LoginResponse loginResponse = new LoginResponse();
-
-        loginResponse.setToken(jwtToken);
-
-        loginResponse.setExpiresIn(jwtService.getExpirationTime());
-
-        return ResponseEntity.ok(loginResponse);
-
+    @ApiResponse(responseCode = "200", description = "Authentication successful")
+    @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDTO> authenticate(@Valid @RequestBody LoginUserDto loginUserDto) {
+        AuthResponseDTO authResponse = authenticationService.login(loginUserDto);
+        return ResponseEntity.ok(authResponse);
     }
+
+    /**
+     * Endpoint for Google OAuth2 login.
+     */
+    @PostMapping("/google-login")
+    public ResponseEntity<AuthResponseDTO> loginWithGoogleOauth2(@RequestBody IdTokenRequestDto requestBody) throws IOException {
+        AuthResponseDTO authResponse = authenticationService.authenticateWithGoogle(requestBody);
+        return ResponseEntity.ok(authResponse);
+    }
+
+    /**
+     * Endpoint to confirm email verification.
+     */
     @GetMapping("/confirm-email")
-    public ResponseEntity<?> confirmEmail(@RequestParam("token") String token) {
+    public ResponseEntity<String> confirmEmail(@RequestParam("token") String token) {
         try {
             boolean isVerified = authenticationService.verifyUser(token);
-            
             if (isVerified) {
                 return ResponseEntity.ok("Your email has been successfully verified.");
             } else {
                 return ResponseEntity.badRequest().body("Invalid confirmation token.");
             }
-            
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Email verification failed.");
         }
     }
 
+    /**
+     * Endpoint to display the forgot password page.
+     */
+    @GetMapping("/forgotPassword")
+    public String forgotPassword() {
+        return "security/forgotPassword";
+    }
+
+    /**
+     * Endpoint to request password reset.
+     */
+    @PostMapping("/password-reset")
+    public ResponseEntity<String> resetPassword(@RequestParam("email") String email) {
+        try {
+            authenticationService.resetPassword(email);
+            return ResponseEntity.ok("Password reset instructions sent to your email.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Password reset failed: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Endpoint to verify password change token.
+     */
+    @GetMapping("/password-change")
+    public ResponseEntity<String> passwordChange(@RequestParam("token") String token) {
+        try {
+            boolean isVerified = authenticationService.verifyResetToken(token);
+            return isVerified
+                    ? ResponseEntity.ok("Password change verification successful.")
+                    : ResponseEntity.badRequest().body("Invalid token.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Password change verification failed: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Endpoint to change password.
+     */
+    @PostMapping("/password-change")
+    public ResponseEntity<String> resetPassword(
+            @RequestParam String token,
+            @RequestBody PasswordChangeRequest request) {
+        try {
+            authenticationService.updatePassword(token, request.getPassword());
+            return ResponseEntity.ok("Password reset successful.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Password reset failed: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Endpoint to log out the user.
+     */
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
         authenticationService.logout();

@@ -19,24 +19,32 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "email_confirmation_tokens")
-public class EmailConfirmationToken {
+@Table(name = "tokens")
+public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
-    private String token;
-    
+    private String tokenValue;
+
     @Column(nullable = false)
     private LocalDateTime timeStamp;
-    
+
+    @Column(nullable = false)
+    private LocalDateTime expirationTime;
+
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    
+
     @PrePersist
     public void prePersist() {
         timeStamp = LocalDateTime.now();
+        expirationTime = timeStamp.plusHours(24);  
+    }
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(expirationTime);
     }
 }

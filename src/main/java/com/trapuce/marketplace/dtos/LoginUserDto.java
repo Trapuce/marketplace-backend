@@ -4,6 +4,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+
+/**
+ * DTO for user authentication (login).
+ * Contains only email and password.
+ */
 @Data
 public class LoginUserDto {
 

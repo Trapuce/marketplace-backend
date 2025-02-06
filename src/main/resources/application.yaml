@@ -1,10 +1,10 @@
-# Configuration de la base de données PostgreSQL
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/marketplace
     username: traore
     password: password
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -21,7 +21,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: dt2040760@gmail.com
-    password: nhoqdgcmdkrxxzsg 
+    password: nhoqdgcmdkrxxzsg
     protocol: smtp
     properties:
       mail:
@@ -40,15 +40,23 @@ logging:
   file:
     name: logs/application.log
 
-# Configuration pour la sécurité (exemple si Spring Security est utilisé)
 security:
   basic:
-    enabled: false # Désactive l'authentification basique par défaut
+    enabled: false 
   jwt:
     secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
-    expiration-time: 3600000 # 1
+    expiration-time: 3600000 # 1 heure en millisecondes
 
-# Configurations personnalisées (optionnel)
+  oauth2:
+    client:
+      registration:
+        google:
+          client-id: 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
+          client-secret: 88111138112-fkgisda7ql2mjmr6ov73ft4b15bo0g6v.apps.googleusercontent.com
+          scope:
+            - email
+            - profile
+
 app:
   name: "MALI SUGU"
-  description: "Une application Spring Boot connectée à PostgreSQL"
+  description: "Une application Spring Boot connectée à une base de données PostgreSQL"

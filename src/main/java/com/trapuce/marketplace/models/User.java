@@ -15,49 +15,59 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(unique = true)
     private String email;
 
+    @Column
     private String password;
+
+    @Column(unique = true)
     private String username;
+
+    @Column(nullable = false)
     private String firstName;
+
+    @Column(nullable = false)
     private String lastName;
+
+    @Column(nullable = false)
     private String phone;
+
+    @Column
     private String address;
 
+    @Column(nullable = false)
     private boolean accountVerified;
 
-    @Temporal(TemporalType.DATE)
-    private Date registration_date;
-
-    private Boolean is_professional;
-
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date registrationDate;
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Advertisement> advertisements;
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-    private List<Message> sent_messages;
+    private List<Message> sentMessages;
 
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
-    private List<Message> received_messages;
+    private List<Message> receivedMessages;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Favorite> favorites;
 
     @OneToMany(mappedBy = "evaluator", cascade = CascadeType.ALL)
-    private List<Evaluation> given_evaluations;
+    private List<Evaluation> givenEvaluations;
 
     @OneToMany(mappedBy = "evaluated", cascade = CascadeType.ALL)
-    private List<Evaluation> received_evaluations;
+    private List<Evaluation> receivedEvaluations;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "image_id", referencedColumnName = "id")
-    private Image image;
+    @JoinColumn(name = "profilePicture_id", referencedColumnName = "id")
+    private Image profilePicture;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "email_confirmation_token_id")
-    private EmailConfirmationToken emailConfirmationToken;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Token emailConfirmationToken;
 
-    public void addAd(Advertisement advertisement) {
+    public void addAdvertisement(Advertisement advertisement) {
         if (advertisements == null) {
             advertisements = new ArrayList<>();
         }
@@ -65,7 +75,7 @@ public class User {
         advertisement.setUser(this);
     }
 
-    public void removeAd(Advertisement advertisement) {
+    public void removeAdvertisement(Advertisement advertisement) {
         if (advertisements != null) {
             advertisements.remove(advertisement);
             advertisement.setUser(null);
