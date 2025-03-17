@@ -15,21 +15,20 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "listing_images")
+public class ListingImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "listing_id", nullable = true)
+    private Listing listing;
 
-    // @Column(columnDefinition = "TEXT")
-    // private String description;
+    @Column(name = "image_url", nullable = false, length = 255)
+    private String imageUrl;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "parent_id")
-    // private Category parent;
-
+    @Column(name = "display_order", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private Integer displayOrder = 0;
 }

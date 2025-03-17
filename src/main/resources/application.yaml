@@ -1,40 +1,6 @@
-# Configuration de la base de données PostgreSQL
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/marketplace
-    username: traore
-    password: password
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-        show_sql: true
-  sql:
-    init:
-      mode: always
-
-logging:
-  level:
-    root: info
-    org.springframework:
-      web: DEBUG
-      validation: DEBUG
-  file:
-    name: logs/application.log
-
-# Configuration pour la sécurité (exemple si Spring Security est utilisé)
-security:
-  basic:
-    enabled: false # Désactive l'authentification basique par défaut
-  jwt:
-    secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
-    expiration-time: 3600000 # 1
-
-# Configurations personnalisées (optionnel)
-app:
-  name: "MALI SUGU"
-  description: "Une application Spring Boot connectée à PostgreSQL"
+  profiles:
+    active: dev
+  
+  application:
+    name: Mali-SUGU

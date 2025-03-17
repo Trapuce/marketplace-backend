@@ -1,52 +1,84 @@
 package com.trapuce.marketplace.models;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 
-
-import jakarta.persistence.*;
-import lombok.*;
-
-@Entity
-@Table(name = "users")
 @Data
+@Table(name = "users")
+@Entity
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    
+    @Column(nullable = false, unique = true)
     private String email;
-
-    private String password;
-
+    
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+    
+    @Column(name = "first_name", nullable = false)
     private String firstName;
+    
+    @Column(name = "last_name", nullable = false)
     private String lastName;
-    private String phone;
+
+    @Column(name = "profile_picture_url", length = 255)
+    private String profilePictureUrl;
+
+    @Column(name = "phone_number")
+    private int phoneNumber;
+
+    @Column
     private String address;
 
-    @Temporal(TemporalType.DATE)
-    private Date registration_date;
+    @Column
+    private String city   ;
 
-    private Boolean is_professional;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Ad> ads;
+    @Column(name = "postal_code")
+    private int postalCode;
 
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-    private List<Message> sent_messages;
+    @Column
+    private boolean isProfessional;
 
-    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
-    private List<Message> received_messages;
+    @Column(name = "is_verified")
+    private boolean isVerified;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Favorite> favorites;
+    @Column(name = "is_active")
+    private boolean isActive;
 
-    @OneToMany(mappedBy = "evaluator", cascade = CascadeType.ALL)
-    private List<Evaluation> given_evaluations;
+    @Column(name = "registration_date", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime registrationDate = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "evaluated", cascade = CascadeType.ALL)
-    private List<Evaluation> received_evaluations;
+    @Column(name = "last_connection_date")
+    private LocalDateTime lastConnectionDate;
 
-   
+    @OneToMany(mappedBy = "user")
+    private List<Listing> listings = new ArrayList<>();
+    public void addListing(Listing listing) {
+        listings.add(listing);
+        listing.setUser(this);
+    }   
+     public void removeListing(Listing listing) {
+        listings.remove(listing);
+        listing.setUser(null);
+    }
+
+
+
+
 }
